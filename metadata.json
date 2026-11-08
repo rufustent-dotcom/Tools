@@ -1,0 +1,8 @@
+{
+  "name": "Studio Applet Builder",
+  "description": "Minimalist generative UI prototyping platform for building, simulating, and exporting AI applets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
