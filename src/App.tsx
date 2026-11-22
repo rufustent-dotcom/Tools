@@ -25,53 +25,40 @@ import {
 } from "lucide-react";
 import { Session, GeneratedApplet, ComponentSpec } from "./types";
 import { generateAppletPDF } from "./utils/pdfGenerator";
+import { Interactive3DViewport, SceneTelemetry } from "./components/Interactive3DViewport";
 
 // Standard starter session values matching the original metadata design HTML
 const INITIAL_SESSIONS: Session[] = [
   {
     id: "session-1",
     name: "3D Scene Generator",
-    prompt: "Build an interactive control panel to edit spotlight angles, material roughness, rendering quality passes, and monitor simulated WebGL GPU loads in real-time.",
+    prompt: "Build an interactive 3D courtyard environment featuring a proximity-triggered sliding portal door, 5 collectible crystalline relics that burst and disappear on interaction, and a lighting atmosphere beacon.",
     temperature: 0.85,
     topP: 0.95,
-    systemInstruction: "You are a creative coder specialized in three.js canvas graphics. Provide strict metric readouts and rendering statuses.",
+    systemInstruction: "You are a creative coder specialized in three.js interactive 3D worlds. Implement smooth exponential damping, raycasted object interaction, and PBR studio lighting.",
     dotColor: "bg-blue-500",
     generatedApplet: {
-      name: "3D Scene Generator",
-      description: "Generate and configure light positions, camera angles, and rendering materials for 3D viewports.",
+      name: "Interactive 3D Sanctuary",
+      description: "Explore the courtyard with WASD or floor clicks to trigger the proximity sliding door and collect disappearing crystalline relics.",
       components: [
-        { id: "mesh-type", type: "input", label: "Geometry Mesh Shape", value: "Sphere Mesh (Standard)" },
-        { id: "light-intensity", type: "stat", label: "Key Light Intensity", value: "1.45 Lumens" },
-        { id: "camera-fov", type: "stat", label: "Perspective Camera FOV", value: "45° Diagonal" },
-        { id: "render-btn", type: "button", label: "Rebuild Viewport Mesh", value: "exec_rebuild" },
+        { id: "door-status", type: "stat", label: "Proximity Portal State", value: "Closed (Auto)" },
+        { id: "relic-count", type: "stat", label: "Collectibles Recovered", value: "0 / 5 Relics" },
+        { id: "approach-door-btn", type: "button", label: "Walk Explorer to Proximity Door", value: "exec_approach_door" },
+        { id: "render-btn", type: "button", label: "Respawn Collectibles & Reset", value: "exec_respawn" },
         {
           id: "render-queue",
           type: "list",
-          label: "Render Engine Active Queue",
+          label: "Interactive World Entities",
           value: "",
           data: [
-            { key: "Shadow Pre-pass", val: 12 },
-            { key: "Raymarch Occlusion", val: 40 },
-            { key: "Post-Processing Glow", val: 95 }
-          ]
-        },
-        {
-          id: "gpu-chart",
-          type: "chart",
-          label: "Real-time GPU Load (%)",
-          value: "",
-          data: [
-            { key: "10s ago", val: 24 },
-            { key: "8s ago", val: 32 },
-            { key: "6s ago", val: 55 },
-            { key: "4s ago", val: 82 },
-            { key: "2s ago", val: 78 },
-            { key: "Now", val: 94 }
+            { key: "Automated Proximity Portal Door", val: 100 },
+            { key: "Crystalline Relics (Raycast & Touch)", val: 100 },
+            { key: "Daylight / Twilight Lighting Beacon", val: 100 }
           ]
         }
       ],
-      codeSnippet: `import React, { useState } from 'react';\nimport { Box, Play, Layers } from 'lucide-react';\n\nexport default function SceneGenerator() {\n  const [intensity, setIntensity] = useState(1.45);\n  const [mesh, setMesh] = useState('Sphere Mesh');\n\n  return (\n    <div className="p-6 bg-white border border-slate-200 rounded-xl space-y-6">\n      <div>\n        <h3 className="font-semibold text-slate-800 text-base">3D Scene Controller</h3>\n        <p className="text-xs text-slate-400">Minimal ambient preview setup</p>\n      </div>\n      \n      <div className="flex gap-4 items-center">\n        <div className="flex-1 bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">\n          <span className="text-[10px] uppercase tracking-wider text-slate-400 block font-bold font-mono">Mesh Active</span>\n          <span className="text-sm font-semibold text-slate-700">{mesh}</span>\n        </div>\n        <div className="flex-1 bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">\n          <span className="text-[10px] uppercase tracking-wider text-slate-400 block font-bold font-mono">Key Light</span>\n          <span className="text-sm font-semibold text-slate-700">{intensity} lm</span>\n        </div>\n      </div>\n\n      <div className="space-y-4">\n        <label className="text-xs font-semibold text-slate-600 block">Configure Light Level</label>\n        <input \n          type="range" \n          min="0.1" \n          max="3.0" \n          step="0.05"\n          value={intensity} \n          onChange={(e) => setIntensity(parseFloat(e.target.value))} \n          className="w-full accent-black cursor-pointer"\n        />\n      </div>\n\n      <button \n        onClick={() => setMesh(mesh === 'Sphere Mesh' ? 'Custom Cube Mesh' : 'Sphere Mesh')}\n        className="w-full py-2 bg-black text-white text-xs font-semibold rounded-lg hover:bg-zinc-800 transition"\n      >\n        Toggle Geometry Mesh\n      </button>\n    </div>\n  );\n}`,
-      systemMessage: "Successfully parsed 3D rendering parameters. Structured layout includes metric stats, custom viewport dimensions, and an interactive material render queue."
+      codeSnippet: `// Interactive Proximity Door & Collectible Disappearance Loop (Three.js)\nconst distToDoor = Math.hypot(explorer.x - door.x, explorer.z - door.z);\nconst shouldOpen = distToDoor < 3.8;\ndoor.openProgress = THREE.MathUtils.damp(door.openProgress, shouldOpen ? 1 : 0, 6.0, dt);\ndoor.leftLeaf.position.x = -0.76 - door.openProgress * 1.42;\ndoor.rightLeaf.position.x = 0.76 + door.openProgress * 1.42;\n\n// Raycast click or walk-up collection\nfunction collectRelic(relic) {\n  if (relic.collected) return;\n  relic.collected = true;\n  relic.disappearing = true;\n  triggerParticleBurst(relic.worldPosition, relic.color);\n}`,
+      systemMessage: "Initialized Three.js PBR courtyard with RoomEnvironment reflections, automated proximity portal door, and 5 interactive collectible relics."
     }
   },
   {
@@ -167,8 +154,8 @@ const INITIAL_SESSIONS: Session[] = [
 ];
 
 export default function App() {
-  // Navigation tabs
-  const [activeTab, setActiveTab] = useState<"editor" | "deployments" | "analytics">("editor");
+  // Navigation tabs (opens directly to the full-bleed Interactive 3D Environment)
+  const [activeTab, setActiveTab] = useState<"3d" | "editor" | "deployments" | "analytics">("3d");
 
   // Sessions list
   const [sessions, setSessions] = useState<Session[]>(() => {
@@ -190,9 +177,26 @@ export default function App() {
   const [showFlash, setShowFlash] = useState<string | null>(null);
   const [previewTab, setPreviewTab] = useState<"sandbox" | "code" | "spec">("sandbox");
 
+  // Live 3D telemetry & command bridge
+  const [sceneTelemetry, setSceneTelemetry] = useState<SceneTelemetry>({
+    doorState: "Closed",
+    doorOpenPercent: 0,
+    collectedCount: 0,
+    totalCollectibles: 5,
+    lightingPreset: "daylight",
+    doorMode: "auto",
+    nearestPrompt: null,
+  });
+  const [sceneCommand, setSceneCommand] = useState<{
+    type: "rebuild" | "approach_door" | "respawn";
+    nonce: number;
+  } | null>(null);
+
   // Simulator active fields
   const [simulatorValues, setSimulatorValues] = useState<Record<string, string>>({});
-  const [simulatorLogs, setSimulatorLogs] = useState<string[]>(["Sandbox initialized with custom properties."]);
+  const [simulatorLogs, setSimulatorLogs] = useState<string[]>([
+    "Interactive 3D environment initialized with proximity portal door and 5 collectible relics."
+  ]);
 
   // Sync state when active session changes or when sessions list is modified
   const activeSession = sessions.find(s => s.id === activeSessionId) || sessions[0];
@@ -321,10 +325,25 @@ export default function App() {
     }
   };
 
+  // Append live 3D environment interaction log entries
+  const appendSceneLog = (msg: string) => {
+    setSimulatorLogs((prev) => [...prev.slice(-19), msg]);
+  };
+
   // Simulator actions behavior
   const triggerSimulatorAction = (elementLabel: string, actionValue: string) => {
+    if (actionValue === "exec_approach_door") {
+      setSceneCommand({ type: "approach_door", nonce: Date.now() });
+      triggerToast("Walking explorer toward proximity door");
+      return;
+    }
+    if (actionValue === "exec_respawn" || actionValue === "exec_rebuild") {
+      setSceneCommand({ type: "respawn", nonce: Date.now() });
+      triggerToast("Respawned collectible relics and reset scene");
+      return;
+    }
     setSimulatorLogs(prev => [
-      ...prev,
+      ...prev.slice(-19),
       `[EVENT] User clicked action "${elementLabel}" (${actionValue})`,
       `Computed simulated pipeline results for event trigger.`
     ]);
@@ -355,54 +374,71 @@ export default function App() {
         </div>
       )}
 
-      {/* Main Canvas Frame mimicking the Clean Minimalism design precisely */}
-      <div id="workspace-frame" className="w-[1240px] h-[860px] bg-white rounded-2xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden select-none">
+      {/* Main Canvas Frame with full 1440px desktop viewport presence */}
+      <div id="workspace-frame" className="w-full max-w-[1440px] h-[calc(100vh-1.5rem)] min-h-[700px] bg-white rounded-2xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden select-none">
         
-        {/* Header Block of Studio Applet */}
-        <header id="stage-header" className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-              <div className="w-4 h-4 border-2 border-white rounded-full"></div>
+        {/* Header Block of Studio Applet (Strict 3-Zone Top Bar) */}
+        <header id="stage-header" className="h-14 bg-white border-b border-slate-200 flex items-center justify-between gap-8 px-6 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <div className="w-7 h-7 bg-slate-900 rounded-lg flex items-center justify-center">
+              <div className="w-3.5 h-3.5 border-2 border-white rounded-full"></div>
             </div>
-            <span className="font-semibold tracking-tight text-base font-mono">Studio Applet</span>
-            <span className="px-2 py-0.5 bg-slate-100 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 rounded border border-slate-200">v2.4.0</span>
+            <span className="font-semibold tracking-tight text-sm text-slate-900 whitespace-nowrap">Studio Applet</span>
           </div>
 
           {/* Navigation Matrix */}
-          <div className="flex items-center gap-6">
-            <nav className="flex gap-6 text-sm font-medium text-slate-500">
-              <button 
-                id="tab-editor"
-                onClick={() => setActiveTab("editor")}
-                className={`transition-colors py-1 px-2 rounded-md ${activeTab === "editor" ? "text-black bg-slate-100 font-semibold" : "hover:text-black hover:bg-slate-50"}`}
-              >
-                Editor
-              </button>
-              <button 
-                id="tab-deployments"
-                onClick={() => setActiveTab("deployments")}
-                className={`transition-colors py-1 px-2 rounded-md ${activeTab === "deployments" ? "text-black bg-slate-100 font-semibold" : "hover:text-black hover:bg-slate-50"}`}
-              >
-                Deployments
-              </button>
-              <button 
-                id="tab-analytics"
-                onClick={() => setActiveTab("analytics")}
-                className={`transition-colors py-1 px-2 rounded-md ${activeTab === "analytics" ? "text-black bg-slate-100 font-semibold" : "hover:text-black hover:bg-slate-50"}`}
-              >
-                Analytics
-              </button>
-            </nav>
-            <div className="w-px h-6 bg-slate-200 mx-2"></div>
+          <nav className="flex items-center gap-6 text-sm font-medium text-slate-500">
             <button 
-              id="publish-btn"
-              onClick={() => triggerToast("Applet prepared! Deploy finished.")}
-              className="px-4 py-2 bg-black hover:bg-neutral-800 text-white text-xs font-semibold rounded-lg transition duration-150 cursor-pointer"
+              id="tab-3d"
+              onClick={() => setActiveTab("3d")}
+              className={`transition-colors py-1 px-2.5 rounded-md whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "3d" ? "text-slate-950 bg-slate-100 font-semibold" : "hover:text-slate-950 hover:bg-slate-50"}`}
             >
-              Publish App
+              3D Environment
             </button>
-          </div>
+            <button 
+              id="tab-editor"
+              onClick={() => setActiveTab("editor")}
+              className={`transition-colors py-1 px-2.5 rounded-md whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "editor" ? "text-slate-950 bg-slate-100 font-semibold" : "hover:text-slate-950 hover:bg-slate-50"}`}
+            >
+              Editor
+            </button>
+            <button 
+              id="tab-deployments"
+              onClick={() => setActiveTab("deployments")}
+              className={`transition-colors py-1 px-2.5 rounded-md whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "deployments" ? "text-slate-950 bg-slate-100 font-semibold" : "hover:text-slate-950 hover:bg-slate-50"}`}
+            >
+              Deployments
+            </button>
+            <button 
+              id="tab-analytics"
+              onClick={() => setActiveTab("analytics")}
+              className={`transition-colors py-1 px-2.5 rounded-md whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "analytics" ? "text-slate-950 bg-slate-100 font-semibold" : "hover:text-slate-950 hover:bg-slate-50"}`}
+            >
+              Analytics
+            </button>
+          </nav>
+
+          <button 
+            id="publish-btn"
+            onClick={() => triggerToast("Applet prepared! Deploy finished.")}
+            className="px-4 py-2 bg-slate-950 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg transition duration-150 cursor-pointer whitespace-nowrap shrink-0"
+          >
+            Publish App
+          </button>
         </header>
+
+        {/* Full-Viewport Interactive 3D Environment Stage */}
+        {activeTab === "3d" && (
+          <main className="flex-1 flex overflow-hidden relative bg-slate-950">
+            <Interactive3DViewport
+              isExpanded={true}
+              onToggleExpand={() => setActiveTab("editor")}
+              onLogEvent={appendSceneLog}
+              onTelemetryChange={setSceneTelemetry}
+              externalCommand={sceneCommand}
+            />
+          </main>
+        )}
 
         {/* Editor Body */}
         {activeTab === "editor" && (
@@ -557,8 +593,7 @@ export default function App() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                      <span className="text-slate-400 tracking-wider">SANDBOX LIVE</span>
+                      <span className="text-slate-500 tracking-wider">SANDBOX READY</span>
                     </div>
                   </div>
 
@@ -580,14 +615,36 @@ export default function App() {
                               <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">{activeSession.generatedApplet.description}</p>
                             </div>
 
+                            {/* Live Embedded Interactive 3D Viewport when working on a 3D scene session */}
+                            {(activeSession.id === "session-1" ||
+                              /3d|scene|door|collectible|environment/i.test(
+                                `${activeSession.name} ${activeSession.prompt}`
+                              )) && (
+                              <div className="w-full h-[380px] rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+                                <Interactive3DViewport
+                                  isExpanded={false}
+                                  onToggleExpand={() => setActiveTab("3d")}
+                                  onLogEvent={appendSceneLog}
+                                  onTelemetryChange={setSceneTelemetry}
+                                  externalCommand={sceneCommand}
+                                />
+                              </div>
+                            )}
+
                             {/* Rendered Layout GRID mapping components dynamically! */}
                             <div className="grid grid-cols-2 gap-4">
                               {activeSession.generatedApplet.components.map((c) => {
                                 if (c.type === "stat") {
+                                  const liveValue =
+                                    c.id === "door-status"
+                                      ? `${sceneTelemetry.doorState} (${sceneTelemetry.doorOpenPercent}%)`
+                                      : c.id === "relic-count"
+                                      ? `${sceneTelemetry.collectedCount} / ${sceneTelemetry.totalCollectibles} Relics`
+                                      : c.value;
                                   return (
                                     <div key={c.id} className="p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
                                       <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1">{c.label}</span>
-                                      <span className="text-xl font-bold font-mono tracking-tight text-slate-800">{c.value}</span>
+                                      <span className="text-xl font-bold font-mono tabular-nums tracking-tight text-slate-800">{liveValue}</span>
                                     </div>
                                   );
                                 }
